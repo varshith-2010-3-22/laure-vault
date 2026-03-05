@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-bone: #F9F9F7;
+  --color-ink: #1A1A1A;
+  --color-grey: #7D7D7D;
+  --color-border: #E2E2E2;
+  --color-ink-muted: rgba(26, 26, 26, 0.45);
+
+  /* Typography */
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Fluid type */
+  --text-hero: clamp(2rem, 8vw, 12rem);
+  --text-title: clamp(1.5rem, 4vw, 5rem);
+  --text-h2: clamp(1.25rem, 2.5vw, 3rem);
+
+  /* Spacing */
+  --nav-height: 64px;
+
+  /* Timing */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Base Reset ─────────────────────────────────────────────────── */
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /* System cursor allowed */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+  }
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────── */
+@layer utilities {
+
+  /* Shimmer skeleton animation */
+  .skeleton {
+    background: linear-gradient(90deg,
+        #EBEBEB 25%,
+        #F3F3F3 50%,
+        #EBEBEB 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  /* Fluid heading sizes */
+  .text-hero {
+    font-size: var(--text-hero);
+  }
+
+  .text-fluid-title {
+    font-size: var(--text-title);
+  }
+
+  .text-fluid-h2 {
+    font-size: var(--text-h2);
+  }
+
+  /* Subtle card hover border */
+  .card-border-hover {
+    border: 1px solid transparent;
+    transition: border-color 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
+  }
+
+  .card-border-hover:hover {
+    border-color: var(--color-border);
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Nav blurred glass */
+  .nav-blur {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background-color: rgba(249, 249, 247, 0.85);
+  }
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Global Progress Bar ────────────────────────────────────────── */
+#nprogress .bar {
+  background: var(--color-ink) !important;
+  height: 1px !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px var(--color-ink), 0 0 5px var(--color-ink) !important;
+}
+
+#nprogress .spinner {
+  display: none !important;
+}
+
+/* ─── Selection ──────────────────────────────────────────────────── */
+::selection {
+  background: var(--color-ink);
+  color: var(--color-bone);
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-grey);
+}
