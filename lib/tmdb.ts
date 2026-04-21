@@ -151,10 +151,15 @@ export async function searchMovies(
     })
 }
 
-export async function getMovieDetails(id: number): Promise<MovieDetail> {
-    return tmdbFetch(`/movie/${id}`, MovieDetailSchema, {
-        append_to_response: 'credits',
-    })
+export async function getMovieDetails(id: number): Promise<MovieDetail | null> {
+    try {
+        return await tmdbFetch(`/movie/${id}`, MovieDetailSchema, {
+            append_to_response: 'credits',
+        })
+    } catch (error) {
+        console.error('TMDB Fetch Error:', error)
+        return null
+    }
 }
 
 export async function getNowPlaying(page = 1): Promise<MovieListResponse> {

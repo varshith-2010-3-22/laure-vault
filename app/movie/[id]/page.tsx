@@ -33,24 +33,33 @@ export default async function MoviePage(props: PageProps) {
         notFound();
     }
 
-    let movie;
-    try {
-        movie = await getMovieDetails(movieId);
-    } catch (error) {
-        console.error('Failed to fetch movie details:', error);
-        notFound();
+    const movie = await getMovieDetails(movieId);
+
+    // If API fails or movie not found, show a beautiful localized "Unavailable" state
+    if (!movie) {
+        return (
+            <div className="min-h-[80vh] flex flex-col items-center justify-center p-12 text-center">
+                <h1 className="font-display text-4xl text-ink mb-4">Movie Temporary Unavailable</h1>
+                <p className="text-grey font-sans max-w-md mx-auto mb-8">
+                    We're having trouble retrieving this story from the vault. This usually happens during high traffic or if the cinematic record is currently being updated.
+                </p>
+                <a href="/" className="px-6 py-2 bg-ink text-bone text-xs font-sans uppercase tracking-widest hover:scale-105 transition-all">
+                    Return to Discover
+                </a>
+            </div>
+        );
     }
 
-    const backdropUrl = movie?.backdrop_path
+    const backdropUrl = movie.backdrop_path
         ? `${IMAGE_SIZES.backdrop.large}${movie.backdrop_path}`
         : null
 
-    const posterUrl = movie?.poster_path
+    const posterUrl = movie.poster_path
         ? `${IMAGE_SIZES.poster.large}${movie.poster_path}`
         : null
 
-    const year = movie?.release_date?.slice(0, 4) ?? ''
-    const runtime = movie?.runtime
+    const year = movie.release_date?.slice(0, 4) ?? ''
+    const runtime = movie.runtime
         ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
         : null
 
@@ -61,7 +70,7 @@ export default async function MoviePage(props: PageProps) {
                 <div className="relative w-full h-[60vh] overflow-hidden -mt-[var(--nav-height)]">
                     <Image
                         src={backdropUrl}
-                        alt={`${movie?.title || 'Movie'} backdrop`}
+                        alt={`${movie.title || 'Movie'} backdrop`}
                         fill
                         priority
                         sizes="100vw"
@@ -84,7 +93,7 @@ export default async function MoviePage(props: PageProps) {
                             >
                                 <Image
                                     src={posterUrl}
-                                    alt={`${movie?.title || 'Movie'} poster`}
+                                    alt={`${movie.title || 'Movie'} poster`}
                                     fill
                                     priority
                                     sizes="(max-width: 768px) 192px, 256px"
@@ -96,7 +105,7 @@ export default async function MoviePage(props: PageProps) {
 
                     <div className="flex-1 pt-4">
                         <div className="flex flex-wrap gap-2 mb-4">
-                            {movie?.genres?.map((g: any) => (
+                            {movie.genres?.map((g: any) => (
                                 <span
                                     key={g.id}
                                     className="text-[10px] font-sans uppercase tracking-wider text-grey px-2 py-0.5 border border-border rounded-sm"
@@ -110,10 +119,10 @@ export default async function MoviePage(props: PageProps) {
                             className="font-display text-ink leading-none tracking-tighter mb-2"
                             style={{ fontSize: 'clamp(2rem, 5vw, 6rem)' }}
                         >
-                            {movie?.title}
+                            {movie.title}
                         </h1>
 
-                        {movie?.tagline && (
+                        {movie.tagline && (
                             <p className="font-display italic text-grey text-lg mb-6">
                                 {movie.tagline}
                             </p>
@@ -127,7 +136,7 @@ export default async function MoviePage(props: PageProps) {
                                     <span>{runtime}</span>
                                 </>
                             )}
-                            {movie?.vote_average && movie.vote_average > 0 && (
+                            {movie.vote_average && movie.vote_average > 0 && (
                                 <>
                                     <span className="text-border">·</span>
                                     <span>★ {movie.vote_average.toFixed(1)}</span>
@@ -137,25 +146,23 @@ export default async function MoviePage(props: PageProps) {
 
                         <div className="mb-8">
                             <p className="text-sm text-ink/70 font-sans leading-relaxed max-w-prose">
-                                {movie?.overview}
+                                {movie.overview}
                             </p>
-                            {movie?.overview && <RegionalTranslator originalText={movie.overview} />}
+                            {movie.overview && <RegionalTranslator originalText={movie.overview} />}
                         </div>
 
-                        {movie && (
-                            <MovieActions movie={{
-                                id: movie.id,
-                                title: movie.title ?? '',
-                                poster_path: movie.poster_path ?? '',
-                                vote_average: movie.vote_average ?? 0,
-                                release_date: movie.release_date ?? '',
-                                overview: movie.overview ?? '',
-                            }} />
-                        )}
+                        <MovieActions movie={{
+                            id: movie.id,
+                            title: movie.title ?? '',
+                            poster_path: movie.poster_path ?? '',
+                            vote_average: movie.vote_average ?? 0,
+                            release_date: movie.release_date ?? '',
+                            overview: movie.overview ?? '',
+                        }} />
                     </div>
                 </div>
 
-                {movie?.credits?.cast && movie.credits.cast.length > 0 && (
+                {movie.credits?.cast && movie.credits.cast.length > 0 && (
                     <div className="mt-24">
                         <div className="flex items-center gap-6 mb-12">
                             <span className="text-xs font-sans uppercase tracking-wider text-grey">
