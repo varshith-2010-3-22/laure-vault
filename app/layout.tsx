@@ -14,19 +14,22 @@ const inter = Inter({
 
 export const metadata: Metadata = {
     title: {
-        default: 'Lumière Vault — Your Cinematic Collection',
+        default: 'Lumière Vault — India\'s Favorite Cinematic Collection',
         template: '%s | Lumière Vault',
     },
     description:
-        'A high-fidelity, editorial–style movie curation platform. Discover, collect, and celebrate cinema.',
-    keywords: ['movies', 'cinema', 'film', 'curation', 'vault'],
+        'A high-fidelity, editorial–style movie curation platform for Bollywood, Tollywood, Kollywood, and more.',
+    keywords: ['movies', 'cinema', 'film', 'curation', 'vault', 'India', 'Bollywood', 'Tollywood', 'Kollywood', 'OTT release'],
     authors: [{ name: 'Lumière Vault' }],
+    manifest: '/manifest.json',
+    themeColor: '#1A1A1A',
+    viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
     openGraph: {
         type: 'website',
         siteName: 'Lumière Vault',
-        title: 'Lumière Vault — Your Cinematic Collection',
+        title: 'Lumière Vault — India\'s Favorite Cinematic Collection',
         description:
-            'A high-fidelity, editorial–style movie curation platform.',
+            'Discover and collect movies from Bollywood, Tollywood, and beyond.',
     },
 }
 

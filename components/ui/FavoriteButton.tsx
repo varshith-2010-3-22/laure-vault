@@ -1,72 +1,22 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import type { Movie } from './MovieCard'
-import { supabase } from '@/lib/supabase'
-import { useQueryClient } from '@tanstack/react-query'
+import { useFavorite } from '@/hooks/useFavorite'
 
 interface FavoriteButtonProps {
     movie: Movie
+    initialFavorite?: boolean
 }
 
-export default function FavoriteButton({ movie }: FavoriteButtonProps) {
-    const [isFavorite, setIsFavorite] = useState(false)
-    const [isAnimating, setIsAnimating] = useState(false)
-    const router = useRouter()
-    const queryClient = useQueryClient()
-
-    // Determine initial state if we are passing vault metadata
-    useEffect(() => {
-        // You would typically sync this with a global user vault state or checking the id 
-        // Real app implementation will check against cached vault array. 
-        // For now, assume false on mount.
-    }, [])
-
-    async function handleToggle(e: React.MouseEvent | React.KeyboardEvent) {
-        e.preventDefault()
-        e.stopPropagation()
-
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session) {
-            router.push('/login')
-            return
-        }
-
-        setIsAnimating(true)
-        const newIsFavorite = !isFavorite
-        setIsFavorite(newIsFavorite)
-
-        try {
-            const endpoint = `/api/favorites${!newIsFavorite ? `?tmdbId=${movie.id}` : ''}`
-            const res = await fetch(endpoint, {
-                method: newIsFavorite ? 'POST' : 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${session.access_token}`,
-                },
-                body: newIsFavorite ? JSON.stringify(movie) : undefined,
-            })
-
-            if (!res.ok) throw new Error('Failed to update favorite')
-
-            // Invalidate the favorites cache so the Vault page re-fetches immediately
-            queryClient.invalidateQueries({ queryKey: ['favorites'] })
-        } catch (error) {
-            console.error(error)
-            // Revert optimistic update
-            setIsFavorite(!newIsFavorite)
-        }
-
-        setTimeout(() => setIsAnimating(false), 400)
-    }
+export default function FavoriteButton({ movie, initialFavorite = false }: FavoriteButtonProps) {
+    const { isFavorite, isAnimating, toggleFavorite } = useFavorite(movie, initialFavorite)
 
     return (
         <button
             type="button"
-            onClick={handleToggle}
-            onKeyDown={(e) => e.key === 'Enter' && handleToggle(e)}
+            onClick={toggleFavorite}
+            onKeyDown={(e) => e.key === 'Enter' && toggleFavorite(e)}
             aria-label={isFavorite ? `Remove ${movie.title} from Vault` : `Add ${movie.title} to Vault`}
             aria-pressed={isFavorite}
             className="relative flex items-center justify-center w-8 h-8 rounded-full bg-bone/90 backdrop-blur-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ink"

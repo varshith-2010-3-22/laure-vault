@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import MovieGrid from '@/components/features/MovieGrid'
 import type { Movie } from '@/lib/tmdb'
 import { supabase } from '@/lib/supabase'
+import { OfflineVault } from '@/lib/offline'
 
 export default function VaultPage() {
     const { data: favorites, isLoading } = useQuery({
@@ -12,14 +13,20 @@ export default function VaultPage() {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) return []
 
-            const res = await fetch('/api/favorites', {
-                headers: {
-                    Authorization: `Bearer ${session.access_token}`,
-                },
-            })
-            if (!res.ok) return []
-            const json = await res.json()
-            return json.favorites ?? []
+            try {
+                const res = await fetch('/api/favorites', {
+                    headers: {
+                        Authorization: `Bearer ${session.access_token}`,
+                    },
+                })
+                if (!res.ok) throw new Error('API down')
+                const json = await res.json()
+                return json.favorites ?? []
+            } catch (e) {
+                // Return cached results if offline or API is down
+                console.warn('Vault offline: fetching from local storage')
+                return OfflineVault.get()
+            }
         },
     })
 
@@ -53,7 +60,7 @@ export default function VaultPage() {
                     </p>
                 </div>
             ) : (
-                <MovieGrid movies={favorites ?? []} isLoading={isLoading} />
+                <MovieGrid movies={favorites ?? []} isLoading={isLoading} isVault={true} />
             )}
         </div>
     )

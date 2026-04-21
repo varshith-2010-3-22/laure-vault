@@ -160,3 +160,29 @@ export async function getTopRated(page = 1): Promise<MovieListResponse> {
         language: 'en-US',
     })
 }
+
+export async function getDiscover(
+    params: {
+        with_original_language?: string
+        region?: string
+        sort_by?: string
+        page?: number
+        with_cast?: string
+        with_keywords?: string
+        with_genres?: string
+    } = {}
+): Promise<MovieListResponse> {
+    const queryParams: Record<string, string> = {
+        page: String(params.page || 1),
+        sort_by: params.sort_by || 'popularity.desc',
+        include_adult: 'false',
+    }
+
+    if (params.with_original_language) queryParams.with_original_language = params.with_original_language
+    if (params.region) queryParams.region = params.region
+    if (params.with_cast) queryParams.with_cast = params.with_cast
+    if (params.with_keywords) queryParams.with_keywords = params.with_keywords
+    if (params.with_genres) queryParams.with_genres = params.with_genres
+
+    return tmdbFetch('/discover/movie', MovieListResponseSchema, queryParams)
+}

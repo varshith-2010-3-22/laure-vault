@@ -10,6 +10,7 @@ interface MovieGridProps {
     isLoading?: boolean
     skeletonCount?: number
     className?: string
+    isVault?: boolean
 }
 
 export default function MovieGrid({
@@ -17,6 +18,7 @@ export default function MovieGrid({
     isLoading = false,
     skeletonCount = 12,
     className = '',
+    isVault = false,
 }: MovieGridProps) {
     return (
         <motion.div
@@ -33,7 +35,7 @@ export default function MovieGrid({
                     <MovieCardSkeleton key={i} />
                 ))
                 : movies.map((movie, i) => (
-                    <MovieCard key={movie.id} movie={movie} index={i} priority={i < 4} />
+                    <MovieCard key={movie.id} movie={movie} index={i} priority={i < 4} isVault={isVault} />
                 ))}
         </motion.div>
     )

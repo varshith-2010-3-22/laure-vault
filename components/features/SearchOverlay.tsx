@@ -7,6 +7,7 @@ import { useDebounce } from '@/hooks/useDebounce'
 import MovieCard from '@/components/ui/MovieCard'
 import MovieCardSkeleton from '@/components/ui/MovieCardSkeleton'
 import type { Movie } from '@/lib/tmdb'
+import { useI18n } from '@/context/I18nContext'
 
 interface SearchOverlayProps {
     isOpen: boolean
@@ -14,6 +15,7 @@ interface SearchOverlayProps {
 }
 
 export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
+    const { t } = useI18n()
     const [query, setQuery] = useState('')
     const debouncedQuery = useDebounce(query, 300)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -99,7 +101,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
 
                     {/* The search input — a single underlined line per spec */}
                     <div className="px-6 md:px-12 pt-10 pb-6">
-                        <div className="relative group">
+                        <div className="relative group flex items-center">
                             <input
                                 ref={inputRef}
                                 type="text"
@@ -107,10 +109,39 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                                 onChange={(e) => setQuery(e.target.value)}
                                 placeholder="Title, director, genre…"
                                 aria-label="Search for movies"
-                                className="w-full bg-transparent font-display text-fluid-title text-ink placeholder:text-border outline-none border-0 border-b border-border pb-3 focus:border-ink transition-colors duration-300"
+                                className="w-full bg-transparent font-display text-fluid-title text-ink placeholder:text-border outline-none border-0 border-b border-border pb-3 focus:border-ink transition-colors duration-300 pr-12"
                                 autoComplete="off"
                                 spellCheck="false"
                             />
+                            {/* Voice Search Button */}
+                            <button
+                                onClick={() => {
+                                    const windowWithSpeech = window as any;
+                                    const SpeechRecognition = windowWithSpeech.SpeechRecognition || windowWithSpeech.webkitSpeechRecognition;
+                                    
+                                    if (SpeechRecognition) {
+                                        const recognition = new SpeechRecognition();
+                                        recognition.lang = 'hi-IN'; // Default to Hindi, browser usually detects
+                                        recognition.start();
+                                        recognition.onresult = (event: any) => {
+                                            const voiceQuery = event.results[0][0].transcript;
+                                            setQuery(voiceQuery);
+                                        };
+                                    } else {
+                                        alert("Voice Search not supported in this browser.");
+                                    }
+                                }}
+                                className="absolute right-0 bottom-3 p-2 text-grey hover:text-ink transition-colors"
+                                title="Voice Search (Hindi/Regional)"
+                                data-cursor-hover
+                            >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                    <line x1="12" y1="19" x2="12" y2="23"/>
+                                    <line x1="8" y1="23" x2="16" y2="23"/>
+                                </svg>
+                            </button>
                             {/* Animated underline */}
                             <motion.span
                                 className="absolute bottom-0 left-0 h-px bg-ink"
@@ -170,7 +201,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                                 animate={{ opacity: 1 }}
                                 className="font-display text-fluid-h2 text-border mt-8 select-none"
                             >
-                                Begin typing to search
+                                {t('beginTyping')}
                             </motion.p>
                         )}
                     </div>

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import FavoriteButton from '@/components/ui/FavoriteButton'
+import RegionalTranslator from '@/components/features/RegionalTranslator'
 
 interface PageProps {
     params: Promise<{ id: string }>
@@ -133,9 +134,12 @@ export default async function MoviePage(props: PageProps) {
                         </div>
 
                         {/* Overview */}
-                        <p className="text-sm text-ink/70 font-sans leading-relaxed max-w-prose mb-8">
-                            {movie.overview}
-                        </p>
+                        <div className="mb-8">
+                            <p className="text-sm text-ink/70 font-sans leading-relaxed max-w-prose">
+                                {movie.overview}
+                            </p>
+                            <RegionalTranslator originalText={movie.overview} />
+                        </div>
 
                         {/* Actions */}
                         <div className="flex items-center gap-4">

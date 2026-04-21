@@ -7,13 +7,75 @@ import { useState, useEffect } from 'react'
 import SearchOverlay from './SearchOverlay'
 import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
+import { useI18n, SUPPORTED_LOCALES } from '@/context/I18nContext'
+import { useDataSaver } from '@/context/DataSaverContext'
 
-const NAV_LINKS = [
-    { href: '/', label: 'Discover' },
-    { href: '/vault', label: 'Vault' },
-]
+function DataSaverToggle() {
+    const { isDataSaver, setDataSaver } = useDataSaver()
+
+    return (
+        <button
+            onClick={() => setDataSaver(!isDataSaver)}
+            className={`p-2 rounded-full transition-all ${
+                isDataSaver ? 'bg-orange-100 text-orange-600' : 'text-grey hover:text-ink'
+            }`}
+            title={isDataSaver ? 'Data Saver On' : 'Data Saver Off'}
+            data-cursor-hover
+        >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+        </button>
+    )
+}
+
+function LanguageSwitcher() {
+    const { locale, setLocale } = useI18n()
+    const [open, setOpen] = useState(false)
+
+    return (
+        <div className="relative group">
+            <button
+                onClick={() => setOpen(!open)}
+                className="text-xs font-sans uppercase tracking-widest text-grey hover:text-ink transition-colors flex items-center gap-1"
+                data-cursor-hover
+            >
+                {locale}
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="m6 9 6 6 6-6"/>
+                </svg>
+            </button>
+            {open && (
+                <div className="absolute top-full mt-2 right-0 bg-bone border border-border shadow-xl py-2 min-w-[120px] z-[60]">
+                    {SUPPORTED_LOCALES.map((l) => (
+                        <button
+                            key={l.id}
+                            onClick={() => {
+                                setLocale(l.id as any)
+                                setOpen(false)
+                            }}
+                            className={`w-full text-left px-4 py-2 text-[10px] font-sans uppercase tracking-widest hover:bg-ink hover:text-bone transition-colors ${
+                                locale === l.id ? 'text-ink font-bold' : 'text-grey'
+                            }`}
+                        >
+                            {l.name}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
 
 export default function Navigation() {
+    const { t } = useI18n()
+
+    const NAV_LINKS = [
+        { href: '/', label: t('discover') },
+        { href: '/vault', label: t('vault') },
+        { href: '#', label: t('support'), isUPI: true },
+    ]
+
     const pathname = usePathname()
     const [searchOpen, setSearchOpen] = useState(false)
     const [user, setUser] = useState<User | null>(null)
@@ -69,17 +131,24 @@ export default function Navigation() {
 
                     {/* Center links */}
                     <ul className="hidden md:flex items-center gap-8" role="list">
-                        {NAV_LINKS.map(({ href, label }) => {
-                            const isActive = pathname === href
+                        {NAV_LINKS.map(({ href, label, isUPI }) => {
+                            const isActive = pathname === href && !isUPI
                             return (
-                                <li key={href}>
+                                <li key={label}>
                                     <Link
                                         href={href}
+                                        onClick={(e) => {
+                                            if (isUPI) {
+                                                e.preventDefault();
+                                                alert("UPI Support: Redirecting to secure payment intent...");
+                                                // window.location.href = "upi://pay?pa=your-vpa@upi&pn=LumiereVault&am=100&cu=INR";
+                                            }
+                                        }}
                                         className="relative text-sm font-sans tracking-tight transition-opacity duration-200 hover:opacity-70"
                                         style={{
                                             color: isActive
                                                 ? 'var(--color-ink)'
-                                                : 'var(--color-grey)',
+                                                : isUPI ? '#ff9933' : 'var(--color-grey)', // Saffron hint
                                         }}
                                         aria-current={isActive ? 'page' : undefined}
                                         data-cursor-hover
@@ -99,34 +168,35 @@ export default function Navigation() {
                     </ul>
 
                     {/* Right: Search trigger */}
-                    <button
-                        type="button"
-                        onClick={() => setSearchOpen(true)}
-                        aria-label="Open search"
-                        className="flex items-center gap-2 text-sm text-grey hover:text-ink transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink rounded-sm"
-                        data-cursor-hover
-                    >
-                        <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
+                    <div className="flex items-center gap-6">
+                        <DataSaverToggle />
+                        <LanguageSwitcher />
+                        <button
+                            type="button"
+                            onClick={() => setSearchOpen(true)}
+                            aria-label="Open search"
+                            className="flex items-center gap-2 text-sm text-grey hover:text-ink transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-ink rounded-sm"
+                            data-cursor-hover
                         >
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.35-4.35" />
-                        </svg>
-                        <span className="hidden sm:inline font-sans tracking-tight">
-                            Search
-                        </span>
-                        <kbd className="hidden lg:inline-flex items-center px-1.5 py-0.5 rounded border border-border text-[10px] text-grey">
-                            ⌘K
-                        </kbd>
-                    </button>
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.35-4.35" />
+                            </svg>
+                            <span className="hidden sm:inline font-sans tracking-tight">
+                                {t('search')}
+                            </span>
+                        </button>
+                    </div>
 
                     {/* Auth Status / Sign In */}
                     <div className="hidden sm:flex items-center ml-8 pl-8 border-l border-border">
