@@ -12,9 +12,12 @@ interface PageProps {
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
     try {
         const params = await props.params
-        const movie = await getMovieDetails(Number(params.id))
+        const movieId = Number(params.id)
+        if (isNaN(movieId)) return { title: 'Movie Not Found' }
+        
+        const movie = await getMovieDetails(movieId)
         return {
-            title: movie.title,
+            title: `${movie.title} — Lumière Vault`,
             description: movie.overview,
         }
     } catch {
@@ -23,12 +26,19 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 export default async function MoviePage(props: PageProps) {
-    let movie
+    const params = await props.params;
+    const movieId = Number(params.id);
+    
+    if (isNaN(movieId)) {
+        notFound();
+    }
+
+    let movie;
     try {
-        const params = await props.params
-        movie = await getMovieDetails(Number(params.id))
-    } catch {
-        notFound()
+        movie = await getMovieDetails(movieId);
+    } catch (error) {
+        console.error('Failed to fetch movie details:', error);
+        notFound();
     }
 
     const backdropUrl = movie.backdrop_path
