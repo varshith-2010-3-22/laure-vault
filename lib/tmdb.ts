@@ -25,13 +25,13 @@ export const IMAGE_SIZES = {
 
 export const MovieSchema = z.object({
     id: z.number(),
-    title: z.string(),
-    overview: z.string(),
+    title: z.string().nullish(),
+    overview: z.string().nullish(),
     poster_path: z.string().nullable(),
     backdrop_path: z.string().nullable(),
-    vote_average: z.number(),
-    vote_count: z.number(),
-    release_date: z.string(),
+    vote_average: z.number().nullish(),
+    vote_count: z.number().nullish(),
+    release_date: z.string().nullish(),
     genre_ids: z.array(z.number()).optional(),
     popularity: z.number().optional(),
     original_language: z.string().optional(),
@@ -39,23 +39,23 @@ export const MovieSchema = z.object({
 
 export const CastMemberSchema = z.object({
     id: z.number(),
-    name: z.string(),
-    character: z.string(),
+    name: z.string().nullish(),
+    character: z.string().nullish(),
     profile_path: z.string().nullable(),
 })
 
 export const CreditsSchema = z.object({
-    cast: z.array(CastMemberSchema),
+    cast: z.array(CastMemberSchema).nullish(),
 })
 
 export const MovieDetailSchema = MovieSchema.extend({
     runtime: z.number().nullable(),
-    tagline: z.string().optional(),
-    genres: z.array(z.object({ id: z.number(), name: z.string() })),
+    tagline: z.string().nullish(),
+    genres: z.array(z.object({ id: z.number(), name: z.string().nullish() })).nullish(),
     production_countries: z.array(
-        z.object({ iso_3166_1: z.string(), name: z.string() })
-    ),
-    status: z.string(),
+        z.object({ iso_3166_1: z.string().nullish(), name: z.string().nullish() })
+    ).nullish(),
+    status: z.string().nullish(),
     budget: z.number().optional(),
     revenue: z.number().optional(),
     credits: CreditsSchema.optional(),
