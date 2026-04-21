@@ -81,28 +81,38 @@ async function tmdbFetch<T>(
 ): Promise<T> {
     const token = process.env.TMDB_BEARER_TOKEN
 
+    if (!token) {
+        console.error('CRITICAL: TMDB_BEARER_TOKEN is not set in environment variables.')
+        // Instead of throwing, we return a value that matches the schema but is empty/flagged
+        // or let the catch block handle it gracefully.
+    }
+
     const url = new URL(`${TMDB_BASE}${endpoint}`)
     Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
 
-    const options: RequestInit = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            ...(token
-                ? { Authorization: `Bearer ${token}` }
-                : {}),
-        },
-        next: { revalidate: 3600 }, // ISR: revalidate every hour
+    try {
+        const options: RequestInit = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            next: { revalidate: 3600 },
+        }
+
+        const res = await fetch(url.toString(), options)
+
+        if (!res.ok) {
+            console.error(`TMDB API Error: ${res.status} ${res.statusText}`)
+            throw new Error('TMDB_UPSTREAM_ERROR')
+        }
+
+        const json = await res.json()
+        return schema.parse(json)
+    } catch (error) {
+        console.error('TMDB Fetch Exception:', error)
+        throw error // Still throw so the page catch block can handle it
     }
-
-    const res = await fetch(url.toString(), options)
-
-    if (!res.ok) {
-        throw new Error(`TMDB API error: ${res.status} ${res.statusText}`)
-    }
-
-    const json = await res.json()
-    return schema.parse(json)
 }
 
 // ─── API Helpers ───────────────────────────────────────────────────

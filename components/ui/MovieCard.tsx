@@ -8,6 +8,8 @@ import FavoriteButton from './FavoriteButton'
 import { useFavorite } from '@/hooks/useFavorite'
 import { useDataSaver } from '@/context/DataSaverContext'
 
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
+
 export interface Movie {
     id: number
     title: string
