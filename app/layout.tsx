@@ -22,8 +22,6 @@ export const metadata: Metadata = {
     keywords: ['movies', 'cinema', 'film', 'curation', 'vault', 'India', 'Bollywood', 'Tollywood', 'Kollywood', 'OTT release'],
     authors: [{ name: 'Lumière Vault' }],
     manifest: '/manifest.json',
-    themeColor: '#1A1A1A',
-    viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
     openGraph: {
         type: 'website',
         siteName: 'Lumière Vault',
@@ -31,6 +29,13 @@ export const metadata: Metadata = {
         description:
             'Discover and collect movies from Bollywood, Tollywood, and beyond.',
     },
+}
+
+export const viewport = {
+    themeColor: '#1A1A1A',
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
 }
 
 export default function RootLayout({
