@@ -36,13 +36,13 @@ export default function MovieCard({
 }: MovieCardProps) {
     const movie: Movie = {
         id: movieProp.id,
-        title: movieProp.title ?? 'Untitled',
-        poster_path: movieProp.poster_path ?? null,
-        vote_average: movieProp.vote_average ?? 0,
-        release_date: movieProp.release_date ?? '',
-        overview: movieProp.overview ?? '',
+        title: movieProp.title || 'Untitled Movie',
+        poster_path: movieProp.poster_path || null,
+        vote_average: movieProp.vote_average ?? null,
+        release_date: movieProp.release_date || '',
+        overview: movieProp.overview || '',
         genre_ids: movieProp.genre_ids,
-    } as Movie
+    }
     const [imageLoaded, setImageLoaded] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
 
@@ -95,7 +95,7 @@ export default function MovieCard({
         : null
 
     const year = movie.release_date?.slice(0, 4) ?? ''
-    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : '—'
+    const rating = movie.vote_average !== null ? movie.vote_average.toFixed(1) : '—'
 
     return (
         <motion.div

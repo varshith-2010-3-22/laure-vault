@@ -13,6 +13,16 @@ export default function RegionalTranslator({ originalText }: RegionalTranslatorP
     const [translatedText, setTranslatedText] = useState('')
     const [isTranslating, setIsTranslating] = useState(false)
 
+    const languageNames: Record<string, string> = {
+        hi: 'Hindi',
+        te: 'Telugu',
+        ta: 'Tamil',
+        ml: 'Malayalam',
+        kn: 'Kannada',
+        bn: 'Bengali',
+        mr: 'Marathi',
+    }
+
     const handleTranslate = async () => {
         if (locale === 'en') return
         setIsTranslating(true)
@@ -50,7 +60,7 @@ export default function RegionalTranslator({ originalText }: RegionalTranslatorP
                 disabled={isTranslating}
                 className="text-[10px] font-sans uppercase tracking-widest text-ink bg-bone border border-border px-3 py-1 hover:bg-ink hover:text-bone transition-colors relative overflow-hidden"
             >
-                {isTranslating ? 'AI Translating...' : `Translate to ${locale.toUpperCase()}`}
+                {isTranslating ? 'AI Translating...' : `Translate to ${languageNames[locale] || locale.toUpperCase()}`}
             </button>
             
             <AnimatePresence>
