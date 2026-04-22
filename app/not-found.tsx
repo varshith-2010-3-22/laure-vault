@@ -13,7 +13,7 @@ export default function NotFound() {
                 Not Found.
             </h1>
             <p className="text-sm text-grey font-sans mb-8 max-w-sm">
-                This film doesn't exist in our vault — or perhaps it was never meant to be found.
+                This film doesn&apos;t exist in our vault — or perhaps it was never meant to be found.
             </p>
             <Link
                 href="/"

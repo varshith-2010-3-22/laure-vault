@@ -12,16 +12,16 @@ const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 
 export interface Movie {
     id: number
-    title: string
+    title: string | null
     poster_path: string | null
-    vote_average: number
-    release_date: string
-    overview: string
+    vote_average: number | null
+    release_date: string | null
+    overview: string | null
     genre_ids?: number[]
 }
 
 interface MovieCardProps {
-    movie: Movie
+    movie: Movie | (Partial<Movie> & { id: number })
     priority?: boolean
     index?: number
     isVault?: boolean
@@ -29,11 +29,20 @@ interface MovieCardProps {
 
 
 export default function MovieCard({
-    movie,
+    movie: movieProp,
     priority = false,
     index = 0,
     isVault = false,
 }: MovieCardProps) {
+    const movie: Movie = {
+        id: movieProp.id,
+        title: movieProp.title || 'Untitled Movie',
+        poster_path: movieProp.poster_path || null,
+        vote_average: movieProp.vote_average ?? null,
+        release_date: movieProp.release_date || '',
+        overview: movieProp.overview || '',
+        genre_ids: movieProp.genre_ids,
+    }
     const [imageLoaded, setImageLoaded] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
 
@@ -86,7 +95,7 @@ export default function MovieCard({
         : null
 
     const year = movie.release_date?.slice(0, 4) ?? ''
-    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : '—'
+    const rating = movie.vote_average !== null ? movie.vote_average.toFixed(1) : '—'
 
     return (
         <motion.div
@@ -236,7 +245,7 @@ export default function MovieCard({
                 <div className="mt-3 px-0.5">
                     <h3
                         className="font-display text-lg leading-tight tracking-tight text-ink line-clamp-1"
-                        title={movie.title}
+                        title={movie.title ?? 'Untitled'}
                     >
                         {movie.title}
                     </h3>

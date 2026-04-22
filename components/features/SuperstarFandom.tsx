@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import MovieGrid from './MovieGrid'
 import MovieCardSkeleton from '../ui/MovieCardSkeleton'
 import { Movie } from '@/lib/tmdb'
+import Image from 'next/image'
 
 const SUPERSTARS = [
     { id: '3223', name: 'Shah Rukh Khan', tag: 'SRK Universe', image: 'https://image.tmdb.org/t/p/w185/86jeYvtp6UoauuLYm6i8XmBIsfI.jpg' },
@@ -54,7 +55,7 @@ export default function SuperstarFandom() {
                         data-cursor-hover
                     >
                         <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-border group-hover:border-ink transition-colors">
-                            <img src={star.image} alt={star.name} className="w-full h-full object-cover" />
+                            <Image src={star.image} alt={star.name} fill className="object-cover" sizes="64px" />
                         </div>
                         <div className="text-left">
                             <p className="text-[10px] font-sans uppercase tracking-widest text-grey transition-colors group-hover:text-ink">

@@ -1,5 +1,6 @@
 import { getMovieDetails, IMAGE_SIZES } from '@/lib/tmdb'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import RegionalTranslator from '@/components/features/RegionalTranslator'
@@ -9,6 +10,8 @@ interface PageProps {
     params: Promise<{ id: string }>
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
     try {
         const params = await props.params
@@ -16,6 +19,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
         if (isNaN(movieId)) return { title: 'Movie Not Found' }
         
         const movie = await getMovieDetails(movieId)
+        if (!movie) return { title: 'Movie Not Found' }
+
         return {
             title: `${movie.title} — Lumière Vault`,
             description: movie.overview,
@@ -28,7 +33,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 export default async function MoviePage(props: PageProps) {
     const params = await props.params;
     const movieId = Number(params.id);
-    
+
     if (isNaN(movieId)) {
         notFound();
     }
@@ -39,13 +44,13 @@ export default async function MoviePage(props: PageProps) {
     if (!movie) {
         return (
             <div className="min-h-[80vh] flex flex-col items-center justify-center p-12 text-center">
-                <h1 className="font-display text-4xl text-ink mb-4">Movie Temporary Unavailable</h1>
+                <h1 className="font-display text-4xl text-ink mb-4">Movie Temporarily Unavailable</h1>
                 <p className="text-grey font-sans max-w-md mx-auto mb-8">
-                    We're having trouble retrieving this story from the vault. This usually happens during high traffic or if the cinematic record is currently being updated.
+                    We&apos;re having trouble retrieving this story from the vault. This usually happens during high traffic or if the cinematic record is currently being updated.
                 </p>
-                <a href="/" className="px-6 py-2 bg-ink text-bone text-xs font-sans uppercase tracking-widest hover:scale-105 transition-all">
+                <Link href="/" className="px-6 py-2 bg-ink text-bone text-xs font-sans uppercase tracking-widest hover:scale-105 transition-all">
                     Return to Discover
-                </a>
+                </Link>
             </div>
         );
     }
@@ -60,8 +65,12 @@ export default async function MoviePage(props: PageProps) {
 
     const year = movie.release_date?.slice(0, 4) ?? ''
     const runtime = movie.runtime
-        ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
+        ? movie.runtime >= 60
+            ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
+            : `${movie.runtime}m`
         : null
+
+    const movieTitle = movie.title || 'Untitled Movie'
 
     return (
         <div className="min-h-screen">
@@ -70,7 +79,7 @@ export default async function MoviePage(props: PageProps) {
                 <div className="relative w-full h-[60vh] overflow-hidden -mt-[var(--nav-height)]">
                     <Image
                         src={backdropUrl}
-                        alt={`${movie.title || 'Movie'} backdrop`}
+                        alt={`${movieTitle} backdrop`}
                         fill
                         priority
                         sizes="100vw"
@@ -93,7 +102,7 @@ export default async function MoviePage(props: PageProps) {
                             >
                                 <Image
                                     src={posterUrl}
-                                    alt={`${movie.title || 'Movie'} poster`}
+                                    alt={`${movieTitle} poster`}
                                     fill
                                     priority
                                     sizes="(max-width: 768px) 192px, 256px"
@@ -105,7 +114,7 @@ export default async function MoviePage(props: PageProps) {
 
                     <div className="flex-1 pt-4">
                         <div className="flex flex-wrap gap-2 mb-4">
-                            {movie.genres?.map((g: any) => (
+                            {movie.genres?.map((g) => (
                                 <span
                                     key={g.id}
                                     className="text-[10px] font-sans uppercase tracking-wider text-grey px-2 py-0.5 border border-border rounded-sm"
@@ -119,7 +128,7 @@ export default async function MoviePage(props: PageProps) {
                             className="font-display text-ink leading-none tracking-tighter mb-2"
                             style={{ fontSize: 'clamp(2rem, 5vw, 6rem)' }}
                         >
-                            {movie.title}
+                            {movieTitle}
                         </h1>
 
                         {movie.tagline && (
@@ -153,7 +162,7 @@ export default async function MoviePage(props: PageProps) {
 
                         <MovieActions movie={{
                             id: movie.id,
-                            title: movie.title ?? '',
+                            title: movieTitle,
                             poster_path: movie.poster_path ?? '',
                             vote_average: movie.vote_average ?? 0,
                             release_date: movie.release_date ?? '',
@@ -171,7 +180,7 @@ export default async function MoviePage(props: PageProps) {
                             <div className="h-px flex-1 bg-border" aria-hidden="true" />
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-6 gap-y-10">
-                            {movie.credits.cast.slice(0, 10).map((person: any) => (
+                            {movie.credits.cast.slice(0, 10).map((person) => (
                                 <div key={person.id} className="group">
                                     <div
                                         className="relative w-full overflow-hidden bg-white rounded-sm mb-3 shadow-sm border border-border"

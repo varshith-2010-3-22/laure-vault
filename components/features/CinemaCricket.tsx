@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import MovieGrid from './MovieGrid'
 import MovieCardSkeleton from '../ui/MovieCardSkeleton'
 import { Movie } from '@/lib/tmdb'
+import Image from 'next/image'
 
 export default function CinemaCricket() {
     const [movies, setMovies] = useState<Movie[]>([])
@@ -61,11 +62,15 @@ export default function CinemaCricket() {
                                     viewport={{ once: true }}
                                     className="bg-bone/5 p-4 rounded-sm border border-bone/10 hover:border-bone/30 transition-all"
                                 >
-                                    <img 
-                                        src={`https://image.tmdb.org/t/p/w342${movie.poster_path}`} 
-                                        alt={movie.title} 
-                                        className="w-full aspect-[2/3] object-cover rounded-sm mb-4"
-                                    />
+                                    <div className="relative w-full aspect-[2/3] mb-4">
+                                        <Image
+                                            src={`https://image.tmdb.org/t/p/w342${movie.poster_path}`}
+                                            alt={movie.title || 'Movie Poster'}
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 250px"
+                                            className="object-cover rounded-sm"
+                                        />
+                                    </div>
                                     <h3 className="text-bone font-display text-lg leading-tight line-clamp-1">{movie.title}</h3>
                                     <p className="text-bone/40 text-xs mt-1 uppercase tracking-widest">{movie.release_date?.slice(0,4)}</p>
                                 </motion.div>
@@ -76,7 +81,7 @@ export default function CinemaCricket() {
                 
                 <div className="mt-12 flex items-center justify-between">
                     <p className="text-xs text-bone/60 font-sans max-w-sm">
-                        Dive into the storytelling behind India's greatest obsession. From IPL documentaries to biographical films of legends.
+                        Dive into the storytelling behind India&apos;s greatest obsession. From IPL documentaries to biographical films of legends.
                     </p>
                     <button className="px-6 py-3 bg-bone text-ink text-[10px] font-sans uppercase tracking-[0.2em] rounded-sm hover:scale-105 active:scale-95 transition-all">
                         Explore Sport Vault
