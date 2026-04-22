@@ -10,6 +10,8 @@ interface PageProps {
     params: Promise<{ id: string }>
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
     try {
         const params = await props.params

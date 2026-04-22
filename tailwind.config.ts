@@ -16,8 +16,8 @@ const config: Config = {
         'ink-muted': 'rgba(26,26,26,0.5)',
       },
       fontFamily: {
-        display: ['Cormorant Garamond', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['var(--font-cormorant)', 'Georgia', 'serif'],
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'fluid-hero': 'clamp(2rem, 8vw, 12rem)',

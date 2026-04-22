@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Cormorant_Garamond } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 import Navigation from '@/components/features/Navigation'
@@ -10,6 +10,14 @@ const inter = Inter({
     variable: '--font-inter',
     display: 'swap',
     weight: ['300', '400', '500'],
+})
+
+const cormorantGaramond = Cormorant_Garamond({
+    subsets: ['latin'],
+    variable: '--font-cormorant',
+    display: 'swap',
+    weight: ['300', '400', '500', '600'],
+    style: ['normal', 'italic'],
 })
 
 export const metadata: Metadata = {
@@ -44,25 +52,10 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <html lang="en" className={inter.variable}>
+        <html lang="en" className={`${inter.variable} ${cormorantGaramond.variable}`}>
             <head>
                 {/* Preconnect to TMDB image CDN */}
                 <link rel="preconnect" href="https://image.tmdb.org" />
-                {/* Preload display font */}
-                <link
-                    rel="preconnect"
-                    href="https://fonts.googleapis.com"
-                    crossOrigin="anonymous"
-                />
-                <link
-                    rel="preconnect"
-                    href="https://fonts.gstatic.com"
-                    crossOrigin="anonymous"
-                />
-                <link
-                    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap"
-                    rel="stylesheet"
-                />
             </head>
             <body className="bg-bone text-ink antialiased">
                 <Providers>

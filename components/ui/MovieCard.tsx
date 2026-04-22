@@ -12,16 +12,16 @@ const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 
 export interface Movie {
     id: number
-    title: string
+    title: string | null
     poster_path: string | null
-    vote_average: number
-    release_date: string
-    overview: string
+    vote_average: number | null
+    release_date: string | null
+    overview: string | null
     genre_ids?: number[]
 }
 
 interface MovieCardProps {
-    movie: any
+    movie: Movie | (Partial<Movie> & { id: number })
     priority?: boolean
     index?: number
     isVault?: boolean
@@ -37,12 +37,12 @@ export default function MovieCard({
     const movie: Movie = {
         id: movieProp.id,
         title: movieProp.title ?? 'Untitled',
-        poster_path: movieProp.poster_path,
+        poster_path: movieProp.poster_path ?? null,
         vote_average: movieProp.vote_average ?? 0,
         release_date: movieProp.release_date ?? '',
         overview: movieProp.overview ?? '',
         genre_ids: movieProp.genre_ids,
-    }
+    } as Movie
     const [imageLoaded, setImageLoaded] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
 
@@ -245,7 +245,7 @@ export default function MovieCard({
                 <div className="mt-3 px-0.5">
                     <h3
                         className="font-display text-lg leading-tight tracking-tight text-ink line-clamp-1"
-                        title={movie.title}
+                        title={movie.title ?? 'Untitled'}
                     >
                         {movie.title}
                     </h3>
