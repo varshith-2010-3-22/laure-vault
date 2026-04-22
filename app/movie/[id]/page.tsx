@@ -1,5 +1,6 @@
 import { getMovieDetails, IMAGE_SIZES } from '@/lib/tmdb'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import RegionalTranslator from '@/components/features/RegionalTranslator'
@@ -16,6 +17,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
         if (isNaN(movieId)) return { title: 'Movie Not Found' }
         
         const movie = await getMovieDetails(movieId)
+        if (!movie) return { title: 'Movie Not Found' }
+
         return {
             title: `${movie.title} — Lumière Vault`,
             description: movie.overview,
@@ -41,11 +44,11 @@ export default async function MoviePage(props: PageProps) {
             <div className="min-h-[80vh] flex flex-col items-center justify-center p-12 text-center">
                 <h1 className="font-display text-4xl text-ink mb-4">Movie Temporary Unavailable</h1>
                 <p className="text-grey font-sans max-w-md mx-auto mb-8">
-                    We're having trouble retrieving this story from the vault. This usually happens during high traffic or if the cinematic record is currently being updated.
+                    We&apos;re having trouble retrieving this story from the vault. This usually happens during high traffic or if the cinematic record is currently being updated.
                 </p>
-                <a href="/" className="px-6 py-2 bg-ink text-bone text-xs font-sans uppercase tracking-widest hover:scale-105 transition-all">
+                <Link href="/" className="px-6 py-2 bg-ink text-bone text-xs font-sans uppercase tracking-widest hover:scale-105 transition-all">
                     Return to Discover
-                </a>
+                </Link>
             </div>
         );
     }

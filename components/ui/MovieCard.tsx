@@ -21,7 +21,7 @@ export interface Movie {
 }
 
 interface MovieCardProps {
-    movie: Movie
+    movie: any
     priority?: boolean
     index?: number
     isVault?: boolean
@@ -29,11 +29,20 @@ interface MovieCardProps {
 
 
 export default function MovieCard({
-    movie,
+    movie: movieProp,
     priority = false,
     index = 0,
     isVault = false,
 }: MovieCardProps) {
+    const movie: Movie = {
+        id: movieProp.id,
+        title: movieProp.title ?? 'Untitled',
+        poster_path: movieProp.poster_path,
+        vote_average: movieProp.vote_average ?? 0,
+        release_date: movieProp.release_date ?? '',
+        overview: movieProp.overview ?? '',
+        genre_ids: movieProp.genre_ids,
+    }
     const [imageLoaded, setImageLoaded] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
 

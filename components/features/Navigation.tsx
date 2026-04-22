@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase'
 import type { User } from '@supabase/supabase-js'
 import { useI18n, SUPPORTED_LOCALES } from '@/context/I18nContext'
 import { useDataSaver } from '@/context/DataSaverContext'
+import Image from 'next/image'
 
 function DataSaverToggle() {
     const { isDataSaver, setDataSaver } = useDataSaver()
@@ -203,11 +204,14 @@ export default function Navigation() {
                         {user ? (
                             <div className="flex items-center gap-4">
                                 {user.user_metadata?.avatar_url && (
-                                    <img
-                                        src={user.user_metadata.avatar_url}
-                                        alt="Avatar"
-                                        className="h-6 w-6 rounded-full"
-                                    />
+                                    <div className="relative h-6 w-6">
+                                        <Image
+                                            src={user.user_metadata.avatar_url}
+                                            alt="Avatar"
+                                            fill
+                                            className="rounded-full"
+                                        />
+                                    </div>
                                 )}
                                 <button
                                     onClick={handleSignOut}
