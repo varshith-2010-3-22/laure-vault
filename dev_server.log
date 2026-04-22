@@ -1,0 +1,21 @@
+
+> lumiere-vault@0.1.0 dev
+> next dev --turbo
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+   ▲ Next.js 15.1.6 (Turbopack)
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.0.2:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1626ms
+ ○ Compiling / ...
+ ✓ Compiled / in 8.7s
+ GET / 200 in 9795ms
+ ⨯ upstream image response failed for https://image.tmdb.org/t/p/w185/86jeYvtp6UoauuLYm6i8XmBIsfI.jpg 404
+ ⨯ upstream image response failed for https://image.tmdb.org/t/p/w185/6vAnRTMsP9jEpsCoyE9U8OAnD8.jpg 404
+ ⨯ upstream image response failed for https://image.tmdb.org/t/p/w185/19S116PCDiC5XhMvIuDqIu2Ff0U.jpg 404
+ ⨯ upstream image response failed for https://image.tmdb.org/t/p/w185/pY5o53n79a785D4I7oU73y9xY8w.jpg 404
+ ○ Compiling /api/movies/discover ...
+ ✓ Compiled /api/movies/discover in 622ms
