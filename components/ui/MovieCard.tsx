@@ -12,11 +12,11 @@ const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p'
 
 export interface Movie {
     id: number
-    title: string
+    title?: string | null
     poster_path: string | null
-    vote_average: number
-    release_date: string
-    overview: string
+    vote_average?: number | null
+    release_date?: string | null
+    overview?: string | null
     genre_ids?: number[]
 }
 
@@ -141,10 +141,10 @@ export default function MovieCard({
                             className="absolute inset-0"
                             style={{ x: imgX, y: imgY }}
                         >
-                            <Image
-                                src={posterUrl}
-                                alt={`${movie.title} movie poster`}
-                                fill
+                                <Image
+                                    src={posterUrl}
+                                    alt={movie.title ? `${movie.title} movie poster` : 'Movie poster'}
+                                    fill
                                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                 className={`object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'
                                     }`}
@@ -236,9 +236,9 @@ export default function MovieCard({
                 <div className="mt-3 px-0.5">
                     <h3
                         className="font-display text-lg leading-tight tracking-tight text-ink line-clamp-1"
-                        title={movie.title}
+                        title={movie.title || undefined}
                     >
-                        {movie.title}
+                        {movie.title || 'Untitled'}
                     </h3>
                     <p className="mt-0.5 text-xs text-grey font-sans tracking-wide uppercase">
                         {year}

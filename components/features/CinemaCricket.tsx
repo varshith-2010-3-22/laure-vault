@@ -63,10 +63,12 @@ export default function CinemaCricket() {
                                 >
                                     <img 
                                         src={`https://image.tmdb.org/t/p/w342${movie.poster_path}`} 
-                                        alt={movie.title} 
+                                        alt={movie.title || 'Movie Poster'} 
                                         className="w-full aspect-[2/3] object-cover rounded-sm mb-4"
                                     />
-                                    <h3 className="text-bone font-display text-lg leading-tight line-clamp-1">{movie.title}</h3>
+                                    <h3 className="text-bone font-display text-lg leading-tight line-clamp-1">
+                                        {movie.title || 'Untitled'}
+                                    </h3>
                                     <p className="text-bone/40 text-xs mt-1 uppercase tracking-widest">{movie.release_date?.slice(0,4)}</p>
                                 </motion.div>
                             )

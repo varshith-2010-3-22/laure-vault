@@ -5,11 +5,11 @@ import FavoriteButton from '@/components/ui/FavoriteButton'
 interface MovieActionsProps {
     movie: {
         id: number
-        title: string
+        title?: string | null
         poster_path: string | null
-        vote_average: number
-        release_date: string
-        overview: string
+        vote_average?: number | null
+        release_date?: string | null
+        overview?: string | null
     }
 }
 

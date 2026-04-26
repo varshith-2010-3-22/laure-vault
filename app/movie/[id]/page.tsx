@@ -16,9 +16,11 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
         if (isNaN(movieId)) return { title: 'Movie Not Found' }
         
         const movie = await getMovieDetails(movieId)
+        if (!movie) return { title: 'Movie Not Found' }
+        
         return {
-            title: `${movie.title} — Lumière Vault`,
-            description: movie.overview,
+            title: `${movie.title || 'Movie'} — Lumière Vault`,
+            description: movie.overview || '',
         }
     } catch {
         return { title: 'Movie' }
